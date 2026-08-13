@@ -4,6 +4,7 @@ init = function()
   grav = 1
   menu = 1
   timer = 0
+  bc = "rgb(65,92,147)"
   
   highscore = 0
   
@@ -21,8 +22,8 @@ init = function()
   points = object
     list = []
     
-    add = function(rot)
-      local tempobj = new point(rot)
+    add = function(rot,typ)
+      local tempobj = new point(rot,typ)
       tempobj.parent = this
       this.list.push(tempobj)
     end
@@ -34,13 +35,18 @@ init = function()
   end
   
   point = class
-    constructor = function(rot)
+    constructor = function(rot,typ)
       this.rot = rot
+      this.typ = typ
       this.x = pen.length*-sin((this.rot+180)/180*PI)
       this.y = pen.length*cos((this.rot+180)/180*PI)
     end
     draw = function()
-      screen.drawSprite( "point", this.x, this.y, 16, 16 )
+      if this.typ == 1 then  
+        screen.drawSprite( "point", this.x, this.y, 16, 16 )
+      elsif this.typ == 2 then 
+        screen.drawSprite( "bluepoint", this.x, this.y, 16, 16 )
+      end
     end
     update = function()
       this.x = pen.length*-sin((this.rot+180)/180*PI)
@@ -51,7 +57,7 @@ init = function()
     end  
   end
   
-  points.add(40)
+  points.add((random.nextInt(180)-90),1)
   
   
 end
@@ -59,18 +65,47 @@ end
 checkpoints = function()
   for p in points.list
     print(abs(pen.rot - p.rot)) 
-    if abs(pen.rot - p.rot) < 10 then  
+    if abs(pen.rot - p.rot) < 10 then
+      if p.typ == 2 then
+        timer += 10
+      end
       p.selfdel()
       colpoints += 1
       newpoint()
+      currentbc = "green"
+      after 100 do
+        if currentbc == "green" then
+          currentbc = "blue"
+        end
+      end
     else
-      if colpoints > 0 then colpoints -= 1 end
+      if colpoints > 0 then 
+        colpoints -= 1
+      end
+      currentbc = "red"
+      after 100 do
+        if currentbc == "red" then
+          currentbc = "blue"
+        end
+      end
     end
   end
 end
 
 newpoint = function()
-  points.add(random.nextInt(180)-90)
+  if nextblue then
+    
+  else
+    randomtyp = random.nextInt(2)+1
+  end  
+    
+  if randomtyp == 2 and not cdblue then //cdblue = cooldown bluepoints
+    points.add(random.nextInt(180)-90,2)
+    cdblue = true
+    cdblue2 = 300
+  else
+    points.add(random.nextInt(180)-90,1)
+  end
 end
 
 
@@ -82,10 +117,28 @@ update = function()
       mouse.press = 0
       timer = 30
       colpoints = 0
+      cdblue = false
+      currentbc = "blue"
     end
   end
   
   if menu == 2 then
+    
+    if currentbc == "blue" then
+      bc = "rgb(65,92,147)"
+    elsif currentbc == "red" then
+      bc ="rgb(197,22,22)"
+    elsif currentbc == "green" then
+      bc ="rgb(49,147,0)"
+    end
+    
+    if cdblue2 > 0 then
+      cdblue2 -= 1 
+    end
+    
+    if cdblue2 < 1 then
+     cdblue = false  
+    end
     
     if timer > 0 then
       ticks += 1
@@ -97,8 +150,8 @@ update = function()
     
     if timer <= 0 then
       menu = 1
-      if highscore < points then
-        highscore = points
+      if highscore < colpoints then
+        highscore = colpoints
       end
     end
     
@@ -133,7 +186,7 @@ update = function()
 end
 
 draw = function()
-  screen.clear("rgb(65,92,147)")
+  screen.clear(bc)
   
   if menu == 1 then
     screen.drawText("Click on the screen", 0, 10, 20,"#fff")
