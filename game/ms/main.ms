@@ -6,7 +6,7 @@ init = function()
   timer = 0
   bc = "rgb(65,92,147)"
   
-  highscore = 0
+  highscore = storage.get("highscore")
   
   colpoints = 0 // collected points
   
@@ -71,7 +71,12 @@ checkpoints = function()
       end
       p.selfdel()
       colpoints += 1
-      newpoint()
+      do
+        sleep 100
+        newpoint()
+      end
+      seteffect = [1,p.x,p.y]
+      effecton = true
       currentbc = "green"
       after 100 do
         if currentbc == "green" then
@@ -108,6 +113,34 @@ newpoint = function()
   end
 end
 
+effect = function(id,x,y)
+  if id == 1 then
+    if alpha1 > 2 and not e1running then 
+      alpha1 = 0 
+      e1running = true
+    elsif alpha1 > 2 and e1running then
+      effecton = false
+      e1running = false
+    end 
+    alpha1 += 1
+  end
+  
+end
+
+effectdraw = function(id,x,y)
+  if id == 1 then
+    screen.fillRound(x,y,10+alpha1*6,10+alpha1*6,"rgba(255,255,255,"+abs(alpha1/2)+")")
+  end
+end
+
+drawpausebutton = function()
+  if pause == 1 then
+    screen.drawSprite( "play", screen.width/2-25, screen.height/2-28, 24, 24 )
+  end
+  if pause == 0 then
+    screen.drawSprite( "pause", screen.width/2-25, screen.height/2-28, 24, 24 )
+  end
+end
 
 update = function()
   
@@ -115,6 +148,7 @@ update = function()
     if keyboard.press.SPACE or mouse.press and mouse.left then
       menu = 2
       mouse.press = 0
+      keyboard.press.SPACE = 0
       timer = 30
       colpoints = 0
       cdblue = false
@@ -152,6 +186,7 @@ update = function()
       menu = 1
       if highscore < colpoints then
         highscore = colpoints
+        storage.set("highscore",highscore)
       end
     end
     
@@ -182,6 +217,33 @@ update = function()
     for el in points.list
       el.update()
     end
+    
+    pause = 0
+    if keyboard.press.P or 
+      ((mouse.x > screen.width/2-35 and mouse.x < screen.width/2-15) and 
+      (mouse.y > screen.height/2-35 and mouse.y < screen.height/2-15)) and
+      mouse.press
+    then
+      menu = 3
+      keyboard.press.P = 0
+      mouse.press = 0
+    end
+    
+    if effecton == true then
+      effect(seteffect[0],seteffect[1],seteffect[2])
+    end
+  end
+  
+  if menu == 3 then
+    pause = 1
+    if keyboard.press.P or 
+      ((mouse.x > screen.width/2-35 and mouse.x < screen.width/2-15) and 
+      (mouse.y > screen.height/2-35 and mouse.y < screen.height/2-15)) and
+      mouse.press
+    then
+      menu = 2
+      
+    end
   end
 end
 
@@ -190,8 +252,11 @@ draw = function()
   
   if menu == 1 then
     screen.drawText("Click on the screen", 0, 10, 20,"#fff")
-    screen.drawText("or space to start", 0, -10, 20,"#fff")
-    screen.drawText("Highscore: " + highscore, 0, -50, 20,"#fff")
+    screen.drawText("or space to start", 0, -5, 20,"#fff")
+    screen.drawText("Highscore: " + highscore, 0, -65, 20,"#fff")
+    screen.drawText("Pendel Game",0,50,30,"#fff")
+    screen.drawText("Controls: Space , P (Pause)",0,-30,15,"#fff")
+    screen.drawText("or click (mouse , touch)",0,-42,15,"#fff")
   end
   
   if menu == 2 then
@@ -204,8 +269,30 @@ draw = function()
     screen.setTranslation(0,0)
     screen.fillRound(0,0,15,15,"rgb(79,79,79)")
     screen.fillRound(60*-sin((pen.rot+180)/180*PI),60*cos((pen.rot+180)/180*PI),18,18,"rgb(79,79,79)")
-    screen.drawText("Points: "+ colpoints, 0, 80, 20,"#fff")
-    screen.drawText("Time: "+ timer, 0, 65, 20,"#fff")
+    screen.drawText("Points: "+ colpoints, 0, screen.height/2-20, 20,"#fff")
+    screen.drawText("Time: "+ timer, 0, screen.height/2-35, 20,"#fff")
+    
+    drawpausebutton()
+    
+    if effecton == true then
+      effectdraw(seteffect[0],seteffect[1],seteffect[2])
+    end
+  end
+  
+  if menu == 3 then
+    for el in points.list
+      el.draw()
+    end
+    screen.setRotation(pen.rot)
+    screen.fillRect(pen.x,pen.y,7,60,"rgb(20,2,2)")
+    screen.setRotation(0)
+    screen.setTranslation(0,0)
+    screen.fillRound(0,0,15,15,"rgb(79,79,79)")
+    screen.fillRound(60*-sin((pen.rot+180)/180*PI),60*cos((pen.rot+180)/180*PI),18,18,"rgb(79,79,79)")
+    screen.drawText("Points: "+ colpoints, 0, screen.height/2-20, 20,"#fff")
+    screen.drawText("Time: "+ timer, 0, screen.height/2-35, 20,"#fff")
+    
+    drawpausebutton()
   end
 end  
   
