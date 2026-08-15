@@ -1,6 +1,6 @@
 # Pendel Game by AJGecko
 
-A game with a pendulum.
+A game with a pendel.
 
 You have a constantly swinging pendulum. The goal is to collect as many yellow (or blue) points as possible by pressing the screen or the spacebar at the moment the pendulum is over a point. Blue points also provide an additional 10 seconds of time.
 
