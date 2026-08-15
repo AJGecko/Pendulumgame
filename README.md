@@ -1,4 +1,4 @@
-# Pendulum Game by AJGecko
+# Pendel Game by AJGecko
 
 A game with a pendulum.
 
