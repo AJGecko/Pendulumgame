@@ -10,4 +10,4 @@ Play: https://microstudio.io/AJGecko/pendelgame/
 
 Project page on microStudio: https://microstudio.io/i/AJGecko/pendelgame/
 
-Build with microStudio and microScript 2.0
+Build with microStudio and microScript 2.0 

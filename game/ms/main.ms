@@ -158,6 +158,17 @@ update = function()
   
   if menu == 2 then
     
+    pause = 0
+    if keyboard.press.P or 
+      ((mouse.x > screen.width/2-35 and mouse.x < screen.width/2-15) and 
+      (mouse.y > screen.height/2-35 and mouse.y < screen.height/2-15)) and
+      mouse.press
+    then
+      menu = 3
+      keyboard.press.P = 0
+      mouse.press = 0
+    end
+    
     if currentbc == "blue" then
       bc = "rgb(65,92,147)"
     elsif currentbc == "red" then
@@ -216,17 +227,6 @@ update = function()
     
     for el in points.list
       el.update()
-    end
-    
-    pause = 0
-    if keyboard.press.P or 
-      ((mouse.x > screen.width/2-35 and mouse.x < screen.width/2-15) and 
-      (mouse.y > screen.height/2-35 and mouse.y < screen.height/2-15)) and
-      mouse.press
-    then
-      menu = 3
-      keyboard.press.P = 0
-      mouse.press = 0
     end
     
     if effecton == true then
