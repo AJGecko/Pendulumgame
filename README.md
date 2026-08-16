@@ -35,7 +35,7 @@ You have a constantly swinging pendulum. The goal is to collect as many yellow (
 > The project data/files is/are located in the game folder. Zipping and importing it would also work.
 
 ## Sreenshots
-![image](https://cdn.hackclub.com/01a00b33-e94e-7180-a4ef-4c5b713e7da1/pendelgamescreenshot1.png)
+![image](https://cdn.hackclub.com/01a00b33-e5e4-7bae-a890-e323b4b994d6/pendelgamescreenshot1.png)
 ![image](https://cdn.hackclub.com/01a00b33-e94e-7180-a4ef-4c5b713e7da1/pendelgamescreenshot2.png)
 
 ---
